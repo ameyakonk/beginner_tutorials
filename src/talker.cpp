@@ -68,16 +68,15 @@ std::string outputMessage =         // default output message
  */
 bool changeMessage(beginner_tutorials::message_srv::Request &req,
                   beginner_tutorials::message_srv::Response &resp) {
-  ROS_INFO_STREAM("Ready to change publish message!");
   if (!req.a.empty()) {
-    ROS_WARN_STREAM("Publish message in talker node is now changed to "
+    ROS_WARN_STREAM("New Message "
                     << req.a);
     outputMessage = req.a;
-    resp.message = "The talker node is now publishing: " + outputMessage;
+    resp.message = "New publish: " + outputMessage;
     return true;
   } else {
     ROS_ERROR_STREAM(
-        "Did not recieve any message to modify. Publishing default message!");
+        "Publishing default message!");
     return false;
   }
 }
@@ -176,5 +175,5 @@ int main(int argc, char **argv) {
     loop_rate.sleep();
     ++count;
   }
- return 0;
+return 0;
 }
