@@ -28,7 +28,7 @@ cd ~/catkin_ws/
 catkin_make
 source devel/setup.bash
 cd src/
-git clone --recursive https://github.com/ameyakonk/beginner_tutorials.git --branch Week10_HW
+git clone --recursive https://github.com/ameyakonk/beginner_tutorials.git
 cd ..
 catkin_make
 
