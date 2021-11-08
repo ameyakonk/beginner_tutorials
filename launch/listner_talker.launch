@@ -1,0 +1,28 @@
+<launch>
+ <arg
+ name="frequency"
+ default="10"
+ />
+ <node
+ args="$(arg frequency)"
+ pkg="beginner_tutorials"
+ type="talker"
+ name="talker_pub"
+ respawn="true"
+ output="screen"
+ />
+ <node
+ pkg="beginner_tutorials"
+ type="listner"
+ name="listner_sub"
+ respawn="true"
+ output="screen"
+ />
+ <node
+ pkg="beginner_tutorials"
+ type="service"
+ name="service_sub"
+ respawn="true"
+ />
+
+ </launch>

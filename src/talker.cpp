@@ -28,10 +28,29 @@
 // %Tag(ROS_HEADER)%
 
 // %Tag(MSG_HEADER)%
+#include <ros/console.h>
+#include <stdlib.h>
 #include <sstream>
 #include "std_msgs/String.h"
 #include "ros/ros.h"
-
+#include "beginner_tutorials/message_srv.h"
+std::string outputMessage =
+    "Hello Terps";
+bool changeMessage(beginner_tutorials::message_srv::Request &req,
+                  beginner_tutorials::message_srv::Response &resp) {
+  ROS_INFO_STREAM("Ready to change publish message!");
+  if (!req.a.empty()) {
+    ROS_WARN_STREAM("Publish message in talker node is now changed to "
+                    << req.a);
+    outputMessage = req.a;
+    resp.message = "The talker node is now publishing: " + outputMessage;
+    return true;
+  } else {
+    ROS_ERROR_STREAM(
+        "Did not recieve any message to modify. Publishing default message!");
+    return false;
+  }
+}
 /**
  * This tutorial demonstrates simple sending of messages over the ROS system.
  */
@@ -79,9 +98,31 @@ int main(int argc, char **argv) {
 // %Tag(PUBLISHER)%
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
 // %EndTag(PUBLISHER)%
-
+  ros::ServiceServer server =
+    n.advertiseService("change_message", &changeMessage);
 // %Tag(LOOP_RATE)%
-  ros::Rate loop_rate(10);
+    int frequency;
+    if (argc == 2) {
+        frequency = std::atoi(argv[1]);
+        ROS_DEBUG_STREAM("The user defined frequency is " << frequency);
+        if (frequency <= 0) {
+          ROS_ERROR_STREAM("The user defined frequency is a non positive number");
+          ROS_WARN_STREAM("Frequency is set to 10 Hz");
+          frequency = 10;
+        }
+    } 
+    else if (argc == 1) {
+        ROS_WARN_STREAM("No frequency specified. Frequency is set to 10 Hz");
+        frequency = 10;
+    } 
+    else {
+        ROS_FATAL_STREAM(
+            "Multiple frequencies specified by the user! Shutting down publisher "
+            "node!");
+        ros::shutdown();
+    }
+    ros::Rate loop_rate(frequency);
+
 // %EndTag(LOOP_RATE)%
 
   /**
@@ -99,14 +140,12 @@ int main(int argc, char **argv) {
     std_msgs::String msg;
 
     std::stringstream ss;
-    ss << "Hello-Terps!!! " << count;
+    ss << outputMessage << count;
     msg.data = ss.str();
+
 // %EndTag(FILL_MESSAGE)%
 
-// %Tag(ROSCONSOLE)%
-    ROS_INFO("%s", msg.data.c_str());
-// %EndTag(ROSCONSOLE)%
-
+    ROS_INFO_STREAM("Argc: " << argc);
     /**
      * The publish() function is how you send messages. The parameter
      * is the message object. The type of this object must agree with the type
@@ -114,8 +153,13 @@ int main(int argc, char **argv) {
      * in the constructor above.
      */
 // %Tag(PUBLISH)%
-    chatter_pub.publish(msg);
-// %EndTag(PUBLISH)%
+        chatter_pub.publish(msg);
+ 
+    if (ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME,
+                                     ros::console::levels::Debug)) {
+        ros::console::notifyLoggerLevelsChanged();
+    }
+
 
 // %Tag(SPINONCE)%
     ros::spinOnce();
