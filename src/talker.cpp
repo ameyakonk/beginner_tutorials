@@ -1,21 +1,26 @@
-/*
- * Copyright (C) 2008, Morgan Quigley and Willow Garage, Inc.
+/************************************************************************************
+ * BSD 3-Clause License
+ * Copyright (c) 2021, Ameya konkar
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *   * Redistributions of source code must retain the above copyright notice,
- *     this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *   * Neither the names of Stanford University or Willow Garage, Inc. nor the names of its
- *     contributors may be used to endorse or promote products derived from
- *     this software without specific prior written permission.
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. Neither the name of the copyright holder nor the names of its
+ *    contributors may be used to endorse or promote products derived from
+ *    this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
  * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
@@ -23,19 +28,44 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
+ ************************************************************************************/
+/**
+ *  @file    talker.cpp
+ *  @author  ameyakonk (AmeyaKonkar)
+ *  @date    11/08/2021
+ *  @version 1.0
+ *
+ *  @brief Source file to implement a simple ROS publisher node and a service
+ *         server node
+ *
+ *  @section DESCRIPTION
+ *
+ *  Source file to implement a simple ROS pubslisher node publishing a custom
+ *  message and facilitate change in message content upon a request
+ *
  */
-// %Tag(FULLTEXT)%
-// %Tag(ROS_HEADER)%
 
-// %Tag(MSG_HEADER)%
 #include <ros/console.h>
 #include <stdlib.h>
 #include <sstream>
 #include "std_msgs/String.h"
 #include "ros/ros.h"
 #include "beginner_tutorials/message_srv.h"
-std::string outputMessage =
+
+std::string outputMessage =         // default output message
     "Hello Terps";
+
+/**
+ *   @brief  the ros service callback function that modifies the string to
+ * publish
+ *
+ *   @param  req is the data member of string type in Request object of
+ *           changeMessage service
+ *           resp is the data member of string type in Response object of
+ *           changeMessage service
+ *   @return boolean value. true to indicate succesful service, false to
+ *           indicate failure
+ */
 bool changeMessage(beginner_tutorials::message_srv::Request &req,
                   beginner_tutorials::message_srv::Response &resp) {
   ROS_INFO_STREAM("Ready to change publish message!");
@@ -51,9 +81,7 @@ bool changeMessage(beginner_tutorials::message_srv::Request &req,
     return false;
   }
 }
-/**
- * This tutorial demonstrates simple sending of messages over the ROS system.
- */
+
 int main(int argc, char **argv) {
   /**
    * The ros::init() function needs to see argc and argv so that it can perform
@@ -65,18 +93,14 @@ int main(int argc, char **argv) {
    * You must call one of the versions of ros::init() before using any other
    * part of the ROS system.
    */
-// %Tag(INIT)%
   ros::init(argc, argv, "talker");
-// %EndTag(INIT)%
 
   /**
    * NodeHandle is the main access point to communications with the ROS system.
    * The first NodeHandle constructed will fully initialize this node, and the last
    * NodeHandle destructed will close down the node.
    */
-// %Tag(NODEHANDLE)%
   ros::NodeHandle n;
-// %EndTag(NODEHANDLE)%
 
   /**
    * The advertise() function is how you tell ROS that you want to
@@ -95,83 +119,62 @@ int main(int argc, char **argv) {
    * than we can send them, the number here specifies how many messages to
    * buffer up before throwing some away.
    */
-// %Tag(PUBLISHER)%
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
-// %EndTag(PUBLISHER)%
+
   ros::ServiceServer server =
     n.advertiseService("change_message", &changeMessage);
-// %Tag(LOOP_RATE)%
+
     int frequency;
     if (argc == 2) {
-        frequency = std::atoi(argv[1]);
-        ROS_DEBUG_STREAM("The user defined frequency is " << frequency);
-        if (frequency <= 0) {
-          ROS_ERROR_STREAM("The user defined frequency is a non positive number");
-          ROS_WARN_STREAM("Frequency is set to 10 Hz");
-          frequency = 10;
-        }
-    } 
-    else if (argc == 1) {
+    frequency = std::atoi(argv[1]);
+    if (frequency <= 0) {
+    ROS_ERROR_STREAM("The user defined frequency is a non positive number");
+    ROS_WARN_STREAM("Frequency is set to 10 Hz");
+    frequency = 10;
+    }
+    } else if (argc == 1) {
         ROS_WARN_STREAM("No frequency specified. Frequency is set to 10 Hz");
         frequency = 10;
-    } 
-    else {
+    } else {
         ROS_FATAL_STREAM(
-            "Multiple frequencies specified by the user! Shutting down publisher "
-            "node!");
+        "Multiple frequencies specified by the user! Shutting down publisher"
+        "node!");
         ros::shutdown();
     }
     ros::Rate loop_rate(frequency);
-
-// %EndTag(LOOP_RATE)%
 
   /**
    * A count of how many messages we have sent. This is used to create
    * a unique string for each message.
    */
-// %Tag(ROS_OK)%
   int count = 0;
   while (ros::ok()) {
-// %EndTag(ROS_OK)%
     /**
      * This is a message object. You stuff it with data, and then publish it.
      */
-// %Tag(FILL_MESSAGE)%
     std_msgs::String msg;
 
     std::stringstream ss;
     ss << outputMessage << count;
     msg.data = ss.str();
-
-// %EndTag(FILL_MESSAGE)%
-
     ROS_INFO_STREAM("Frequency: " << frequency);
+
     /**
      * The publish() function is how you send messages. The parameter
      * is the message object. The type of this object must agree with the type
      * given as a template parameter to the advertise<>() call, as was done
      * in the constructor above.
      */
-// %Tag(PUBLISH)%
         chatter_pub.publish(msg);
- 
     if (ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME,
                                      ros::console::levels::Debug)) {
         ros::console::notifyLoggerLevelsChanged();
     }
 
-
-// %Tag(SPINONCE)%
     ros::spinOnce();
-// %EndTag(SPINONCE)%
 
-// %Tag(RATE_SLEEP)%
     loop_rate.sleep();
-// %EndTag(RATE_SLEEP)%
     ++count;
   }
-
-
-  return 0;
+ return 0;
 }
-// %EndTag(FULLTEXT)%

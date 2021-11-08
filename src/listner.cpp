@@ -1,21 +1,26 @@
-/*
- * Copyright (C) 2008, Morgan Quigley and Willow Garage, Inc.
+/************************************************************************************
+ * BSD 3-Clause License
+ * Copyright (c) 2021, Ameya konkar
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *   * Redistributions of source code must retain the above copyright notice,
- *     this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *   * Neither the names of Stanford University or Willow Garage, Inc. nor the names of its
- *     contributors may be used to endorse or promote products derived from
- *     this software without specific prior written permission.
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. Neither the name of the copyright holder nor the names of its
+ *    contributors may be used to endorse or promote products derived from
+ *    this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
  * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
@@ -23,20 +28,32 @@
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
+ ************************************************************************************/
+/**
+ *  @file    listner.cpp
+ *  @author  ameyakonk (AmeyaKonkar)
+ *  @date    11/08/2021
+ *  @version 1.0
+ *
+ *  @brief Source file to implement a simple ROS publisher node and a service
+ *         server node
+ *
+ *  @section DESCRIPTION
+ *
+ *  Source file to implement a simple ROS pubslisher node publishing a custom
+ *  message and facilitate change in message content upon a request
+ *
  */
 
-// %Tag(FULLTEXT)%
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 
 /**
  * This tutorial demonstrates simple receipt of messages over the ROS system.
  */
-// %Tag(CALLBACK)%
 void chatterCallback(const std_msgs::String::ConstPtr& msg) {
   ROS_INFO_STREAM("I heard: "<< msg->data.c_str());
 }
-// %EndTag(CALLBACK)%
 
 int main(int argc, char **argv) {
   /**
@@ -73,19 +90,14 @@ int main(int argc, char **argv) {
    * is the number of messages that will be buffered up before beginning to throw
    * away the oldest ones.
    */
-// %Tag(SUBSCRIBER)%
   ros::Subscriber sub = n.subscribe("chatter", 1000, chatterCallback);
-// %EndTag(SUBSCRIBER)%
 
   /**
    * ros::spin() will enter a loop, pumping callbacks.  With this version, all
    * callbacks will be called from within this thread (the main one).  ros::spin()
    * will exit when Ctrl-C is pressed, or the node is shutdown by the master.
    */
-// %Tag(SPIN)%
   ros::spin();
-// %EndTag(SPIN)%
 
   return 0;
 }
-// %EndTag(FULLTEXT)%
