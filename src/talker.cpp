@@ -145,7 +145,7 @@ int main(int argc, char **argv) {
 
 // %EndTag(FILL_MESSAGE)%
 
-    ROS_INFO_STREAM("Argc: " << argc);
+    ROS_INFO_STREAM("Frequency: " << frequency);
     /**
      * The publish() function is how you send messages. The parameter
      * is the message object. The type of this object must agree with the type
