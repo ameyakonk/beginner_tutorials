@@ -4,8 +4,13 @@
 
 ## Project Description
 
-The project launch file to launch two nodes (talker and listner) at the same time. The program is equipped with appropriate 
-warnings. It also provides a functionality to change output message using services. 
+The project performs the following functionalities.
+
+1. The program uses talker and listner node to broadcast and subscribe messages. 
+2. The rosservice is used if the user wishes to change the message broadcasted message.
+3. TF is used to broadcast frame/talk to the parent /world frame with different translation.
+4. Functionality to record rosbags and view rqt_tree provided
+5. Test node is created to test the talker, listner functionalities using gtest.
 
 ## Personnel
 
@@ -18,7 +23,8 @@ Master's Student at University of Maryland,College Park
 ## Overview
 
 ### Dependencies
-This is a ROS package which needs [ROS Noetic](http://wiki.ros.org/Installation/Ubuntu) to be installed on Ubuntu 20.04. 
+This is a ROS package which needs [ROS Noetic](http://wiki.ros.org/Installation/Ubuntu) to be installed on Ubuntu 20.04.
+TF is required and should be included as a required Catkin package in the CmakeLists.txt and package.xml
 
 ### Building the Program and Tests
 
@@ -114,7 +120,7 @@ catkin_make run_tests
 ## ROSBAG Recording
 The published topics can be saved into a rosbag. The launch file has an argument to enable recording of the topics into a rosbag. To run the nodes and record the published topics, execute the folowing command in a terminal:
 ```
-roslaunch beginner_tutorials listener_talker.launch rosbagRecord:=true
+roslaunch beginner_tutorials listener_talker.launch rosbag_record:=true
 ``` 
 To view the rosbag, run the commands
 ```
