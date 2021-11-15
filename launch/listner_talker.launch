@@ -3,6 +3,14 @@
  name="frequency"
  default="10"
  />
+ <arg 
+    name="record_rosbag" 
+    default = "false"
+/>
+<arg 
+    name="rosbag_name" 
+    default = "chatter"
+/>
  <node
  args="$(arg frequency)"
  pkg="beginner_tutorials"
@@ -19,10 +27,10 @@
  output="screen"
  />
  <node
- pkg="beginner_tutorials"
- type="service"
- name="service_sub"
- respawn="true"
- />
-
+ pkg = "rosbag"
+ name = "record"
+ type = "record"
+ args = "-a -O $(find beginner_tutorials)/results/$(arg rosbag_name)"
+ if = "$(arg record_rosbag)"
+ />  
  </launch>
