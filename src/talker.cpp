@@ -45,6 +45,7 @@
  *
  */
 
+#include <tf/transform_broadcaster.h>
 #include <ros/console.h>
 #include <stdlib.h>
 #include <sstream>
@@ -100,6 +101,8 @@ int main(int argc, char **argv) {
    * NodeHandle destructed will close down the node.
    */
   ros::NodeHandle n;
+   static tf::TransformBroadcaster br;
+  tf::Transform transform;
 
   /**
    * The advertise() function is how you tell ROS that you want to
@@ -165,10 +168,16 @@ int main(int argc, char **argv) {
      * in the constructor above.
      */
         chatter_pub.publish(msg);
-    if (ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME,
-                                     ros::console::levels::Debug)) {
-        ros::console::notifyLoggerLevelsChanged();
-    }
+    transform.setOrigin(tf::Vector3(cos(ros::Time::now().toSec()),
+                                    sin(ros::Time::now().toSec()), 0.0));
+    tf::Quaternion q;
+    // Set yaw to 1 radian and 0 roll and pitch values
+    q.setRPY(0, 0, 1.0);
+    transform.setRotation(q);
+    // Broadcast the transform at current time with world as parent frame and
+    // talk as child frame
+    br.sendTransform(
+        tf::StampedTransform(transform, ros::Time::now(), "world", "talk"));
 
     ros::spinOnce();
 
