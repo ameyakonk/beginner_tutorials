@@ -56,21 +56,20 @@
 #include "std_msgs/String.h"
 
 /**
- * @brief Test case to check the existence of the modifyOutput service
+ * @brief Test case to check the existence of the message_srv service
  * @param none
  * @return none
  */
 TEST(TestTalkerNode, testInitializationOfROSService) {
   ros::NodeHandle nh;
-  ros::ServiceClient client =
-      nh.serviceClient<beginner_tutorials::message_srv>("change_message");
+  ros::ServiceClient client = nh.serviceClient<beginner_tutorials::message_srv>("change_message");
   // Check if the client exists
   bool exists(client.waitForExistence(ros::Duration(5.0)));
   EXPECT_TRUE(exists);
 }
 
 /**
- * @brief Test case to check the succesful call of the modifyOutput service
+ * @brief Test case to check the succesful call of the message_srv service
  * @param none
  * @return none
  */
