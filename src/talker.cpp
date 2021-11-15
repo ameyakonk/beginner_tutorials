@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
    * NodeHandle destructed will close down the node.
    */
   ros::NodeHandle n;
-   static tf::TransformBroadcaster br;
+  static tf::TransformBroadcaster br;
   tf::Transform transform;
 
   /**
