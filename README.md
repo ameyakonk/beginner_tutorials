@@ -120,7 +120,7 @@ catkin_make run_tests
 ## ROSBAG Recording
 The published topics can be saved into a rosbag. The launch file has an argument to enable recording of the topics into a rosbag. To run the nodes and record the published topics, execute the folowing command in a terminal:
 ```
-roslaunch beginner_tutorials listener_talker.launch rosbagRecord:=true
+roslaunch beginner_tutorials listener_talker.launch rosbag_record:=true
 ``` 
 To view the rosbag, run the commands
 ```
