@@ -34,10 +34,10 @@ TEST(TestTalkerNode, testROSServiceCall) {
   ros::ServiceClient client =
       nh.serviceClient<beginner_tutorials::message_srv>("change_message");
 
-  beginner_tutorials::modifyOutput::Request req;
-  beginner_tutorials::modifyOutput::Response resp;
+  beginner_tutorials::message_srv::Request req;
+  beginner_tutorials::message_srv::Response resp;
 
-  req.desiredOutput = "Hello Terps";
+  req.a = "Hello Terps";
   std::string expectedString = req.a;
 
   bool success = client.call(req, resp);
