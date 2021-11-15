@@ -72,7 +72,7 @@ bool changeMessage(beginner_tutorials::message_srv::Request &req,
     ROS_WARN_STREAM("New Message "
                     << req.a);
     outputMessage = req.a;
-    resp.message = "New publish: " + outputMessage;
+    resp.message = outputMessage;
     return true;
   } else {
     ROS_ERROR_STREAM(
